@@ -41,7 +41,11 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    'nuxt-google-maps-module',
   ],
+  maps:{
+    key: process.env.GOOGLE_MAPS_KEY,
+  },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
