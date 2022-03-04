@@ -1,7 +1,11 @@
 <template>
-  <v-main class="screen">
+  <v-main>
     <v-navigation-drawer v-model="drawer" app>
-      <!--  -->
+      <div class="py-1" v-for="camera in cameras.cameras" :key="camera.id">
+        <NuxtLink :to=camera.id>
+          <v-img class="thumbnail-img" :class="{offline: (camera.status != 'online')}"  width="100%" :src="camera.thumbnail_url" />
+        </NuxtLink>
+      </div>
     </v-navigation-drawer>
 
     <v-app-bar app>
@@ -9,9 +13,9 @@
 
       <v-toolbar-title>Application</v-toolbar-title>
     </v-app-bar>
-    <v-main class="pa-0 ma-0">
-      <div class="map" ref="map"></div>
-    </v-main>
+    <v-container class="map map-container pa-0 ma-0">
+      <div class="map pa-0 ma-0" ref="map"></div>
+    </v-container>
   </v-main>
 </template>
 
@@ -21,18 +25,30 @@ export default {
   data() {
     return { drawer: false };
   },
-  mounted() {
+  async mounted() {
     console.log(this.cameras);
+    let center = { lat: 0, lng: 0 };
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        center.lat = position.coords.latitude;
+        center.lng = position.coords.longitude;
+        console.log(center);
+      });
+    }
+    console.log(center);
     const map = new google.maps.Map(this.$refs.map, {
-      zoom: 3,
-      center: { lat: 0, lng: 0 },
+      zoom: 4,
+      center: center,
     });
+    const mapMarkers = [];
     for (let index = 0; index < this.cameras.cameras.length; index++) {
       const marker = new google.maps.Marker({
         position: this.cameras.cameras[index].location,
         map: map,
       });
+      mapMarkers.push(marker);
     }
+    console.log(this.$refs.map);
   },
   async asyncData() {
     return {
@@ -46,8 +62,10 @@ export default {
 
 <style>
 .map {
-  height: 100vw;
+  height: 100vh;
   width: 100vw;
-  padding: 0;
+}
+.offline{
+  opacity: 0.2;
 }
 </style>
