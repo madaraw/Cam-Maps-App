@@ -1,12 +1,12 @@
 <template>
   <v-container class="screen pa-0 ma-0">
     <NuxtLink to="/" class="back-btn"> <v-btn>Go back</v-btn> </NuxtLink>
-    <v-img
+    <!-- <v-img
       height="100vh"
       contain
       :src="backgroundImg"
       class="background-image"
-    ></v-img>
+    ></v-img> -->
     <v-img
       height="100vh"
       contain
@@ -33,10 +33,10 @@ export default {
       this.highRefreshRateImg = `https://media.evercam.io/v1/cameras/${this.$route.params.pathMatch}/thumbnail?thumbnailId=${randomTime}`;
     }, 2000);
 
-    this.refreshBgImage = setInterval(() => {
-      let randomTime = new Date().getTime();
-      this.backgroundImg = `https://media.evercam.io/v1/cameras/${this.$route.params.pathMatch}/thumbnail?thumbnailId=${randomTime}`;
-    }, 4500);
+    // this.refreshBgImage = setInterval(() => {
+    //   let randomTime = new Date().getTime();
+    //   this.backgroundImg = `https://media.evercam.io/v1/cameras/${this.$route.params.pathMatch}/thumbnail?thumbnailId=${randomTime}`;
+    // }, 4500);
   },
   beforeDestroy() {
     clearInterval(this.refreshImage);
