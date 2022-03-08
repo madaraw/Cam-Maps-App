@@ -1,18 +1,7 @@
 <template>
-  <v-container class="screen pa-0 ma-0">
+  <v-container class="screen pa-0 d-flex justify-center">
     <NuxtLink to="/" class="back-btn"> <v-btn>Go back</v-btn> </NuxtLink>
-    <!-- <v-img
-      height="100vh"
-      contain
-      :src="backgroundImg"
-      class="background-image"
-    ></v-img> -->
-    <v-img
-      height="100vh"
-      contain
-      :src="highRefreshRateImg"
-      class="high-refreshRate-image"
-    ></v-img>
+    <img :src="streamImg" class="stream" />
   </v-container>
 </template>
 
@@ -20,28 +9,19 @@
 export default {
   data() {
     return {
-      highRefreshRateImg: `https://media.evercam.io/v1/cameras/${this.$route.params.pathMatch}/thumbnail?thumbnailId=1`,
-      backgroundImg: `https://media.evercam.io/v1/cameras/${this.$route.params.pathMatch}/thumbnail?thumbnailId=1`,
-      refreshImage: null,
-      refreshBgImage: null,
+      streamImg: `https://media.evercam.io/v1/cameras/${this.$route.params.pathMatch}/thumbnail?thumbnailId=1`,
+      refreshStreamImage: null,
     };
   },
   async mounted() {
     console.log(this.$route.params.pathMatch);
-    this.refreshImage = setInterval(() => {
+    this.refreshStreamImage = setInterval(() => {
       let randomTime = new Date().getTime();
-      this.highRefreshRateImg = `https://media.evercam.io/v1/cameras/${this.$route.params.pathMatch}/thumbnail?thumbnailId=${randomTime}`;
-    }, 2000);
-
-    // this.refreshBgImage = setInterval(() => {
-    //   let randomTime = new Date().getTime();
-    //   this.backgroundImg = `https://media.evercam.io/v1/cameras/${this.$route.params.pathMatch}/thumbnail?thumbnailId=${randomTime}`;
-    // }, 4500);
+      this.streamImg = `https://media.evercam.io/v1/cameras/${this.$route.params.pathMatch}/thumbnail?thumbnailId=${randomTime}`;
+    }, 500);
   },
   beforeDestroy() {
-    clearInterval(this.refreshImage);
-    clearInterval(this.refreshBgImage);
-    console.log("destroyed");
+    clearInterval(this.refreshStreamImage);
   },
 };
 </script>
@@ -58,15 +38,10 @@ export default {
   text-decoration: none;
   position: absolute;
   z-index: 10;
-  left: 8rem;
-  top: 1rem;
+  left: 7%;
+  top: 5%;
 }
-.background-image {
-  position: absolute;
-  z-index: 1;
-}
-.high-refreshRate-image {
-  position: absolute;
-  z-index: 2;
+.stream {
+  height: 100%;
 }
 </style>
