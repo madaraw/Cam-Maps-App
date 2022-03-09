@@ -9,17 +9,17 @@
 export default {
   data() {
     return {
-      streamImg: `https://media.evercam.io/v1/cameras/${this.$route.params.pathMatch}/thumbnail?thumbnailId=1`,
+      cameraId: this.$route.params.pathMatch.split('&')[0],
+      cameraFrequency: this.$route.params.pathMatch.split('&')[1],
+      streamImg: `https://media.evercam.io/v1/cameras/${this.$route.params.pathMatch.split('&')[0]}/thumbnail?thumbnailId=1`,
       refreshStreamImage: null,
     };
   },
   async mounted() {
-    console.log(this.$route.params.pathMatch);
     this.refreshStreamImage = setInterval(() => {
       let randomTime = new Date().getTime();
-      this.streamImg = `https://media.evercam.io/v1/cameras/${this.$route.params.pathMatch}/thumbnail?thumbnailId=${randomTime}`;
-      // console.log(this.streamImg);
-    }, 2000);
+      this.streamImg = `https://media.evercam.io/v1/cameras/${this.cameraId}/thumbnail?thumbnailId=${randomTime}`;
+    }, 60/this.cameraFrequency *1000);
   },
   beforeDestroy() {
     clearInterval(this.refreshStreamImage);
@@ -39,8 +39,8 @@ export default {
   text-decoration: none;
   position: absolute;
   z-index: 10;
-  left: 7%;
-  top: 5%;
+  left: 0;
+  top: 0;
 }
 .stream {
   height: 100%;

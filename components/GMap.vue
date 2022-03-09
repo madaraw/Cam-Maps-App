@@ -67,7 +67,7 @@ export default {
 
       // Adding the event listener for the click
       marker.addListener("click", () => {
-        this.$router.push("/" + this.onlineCameras[i].id);
+        this.$router.push("/" + this.onlineCameras[i].id + "&" + this.onlineCameras[i].frequency);
       });
 
       // Saving the marker

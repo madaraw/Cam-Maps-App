@@ -3,7 +3,7 @@
     <v-navigation-drawer v-model="drawer" app>
       <div class="py-1" v-for="camera in cameras" :key="camera.id">
         <div v-if="camera.status == 'online'">
-          <NuxtLink :to="camera.id" class="text-decoration-none">
+          <NuxtLink :to="camera.id + '&' + camera.frequency" class="text-decoration-none">
             <div>
               <v-img width="100%" :src="camera.thumbnail_url" />
               <h4 class="text-center white--text">{{ camera.name }}</h4>
