@@ -18,7 +18,8 @@ export default {
     this.refreshStreamImage = setInterval(() => {
       let randomTime = new Date().getTime();
       this.streamImg = `https://media.evercam.io/v1/cameras/${this.$route.params.pathMatch}/thumbnail?thumbnailId=${randomTime}`;
-    }, 500);
+      // console.log(this.streamImg);
+    }, 2000);
   },
   beforeDestroy() {
     clearInterval(this.refreshStreamImage);
