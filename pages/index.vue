@@ -30,11 +30,11 @@
       class="map pa-0 ma-0"
       v-if="onlineCams.length && offlineCams.length"
     >
-      <v-hover v-slot="{ hover }">
+      <v-hover v-slot="{ hover }" class="checkBoxes">
         <v-card
           fluid
           :elevation="hover ? 8 : 4"
-          class="checkBoxes grey darken-4 ma-5 px-2 py-1 rounded-lg"
+          class="grey darken-4 ma-5 px-2 py-1 rounded-lg"
         >
           <v-checkbox
             class="ma-0"
