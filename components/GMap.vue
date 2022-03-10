@@ -9,20 +9,32 @@ export default {
   props: ["onlineCameras", "offlineCameras"],
   data() {
     return {
-      map: null,
-      markerCluster: null,
-      markersOnline: [],
-      markersOffline: [],
       infoWindows: [],
     };
   },
+  computed: {
+    markersOnline() {
+      return this.$store.getters["markers/GET_MARKERS_ONLINE"];
+    },
+    markersOffline() {
+      return this.$store.getters["markers/GET_MARKERS_OFFLINE"];
+    },
+    markersCluster() {
+      return this.$store.getters["markers/GET_MARKER_CLUSTER"];
+    },
+    map() {
+      return this.$store.getters["markers/GET_MAP"];
+    },
+  },
   mounted() {
-      console.log("mounted", this.onlineCameras)
-    // Setting the center
+    let markersOnline = [];
+    let markersOffline = [];
+    let markerCluster = null;
+    let map = null;
     let center = { lat: 51.53375206516868, lng: 0.0824166094009549 };
 
     // Embedding the map
-    this.map = new this.$google.maps.Map(this.$refs.map, {
+    map = new this.$google.maps.Map(this.$refs.map, {
       zoom: 6,
       center: center,
       disableDefaultUI: true,
@@ -49,7 +61,7 @@ export default {
       // Creating the marker
       const marker = new this.$google.maps.Marker({
         position: this.onlineCameras[i].location,
-        map: this.map,
+        map: map,
         title: this.onlineCameras[i].name,
         icon: svgMarkerIcon,
       });
@@ -57,7 +69,7 @@ export default {
       marker.addListener("mouseover", () => {
         infowindow.open({
           anchor: marker,
-          map: this.map,
+          map: map,
           shouldFocus: false,
         });
       });
@@ -67,11 +79,13 @@ export default {
 
       // Adding the event listener for the click
       marker.addListener("click", () => {
-        this.$router.push("/" + this.onlineCameras[i].id + "&" + this.onlineCameras[i].frequency);
+        this.$router.push(
+          "/" + this.onlineCameras[i].id + "&" + this.onlineCameras[i].frequency
+        );
       });
 
       // Saving the marker
-      this.markersOnline.push(marker);
+      markersOnline.push(marker);
 
       // Saving the info window
       this.infoWindows.push(infowindow);
@@ -90,7 +104,7 @@ export default {
       // Creating the marker
       const marker = new this.$google.maps.Marker({
         position: this.offlineCameras[i].location,
-        map: this.map,
+        map: map,
         title: this.offlineCameras[i].name,
         icon: svgMarkerIcon,
       });
@@ -99,7 +113,7 @@ export default {
       marker.addListener("mouseover", () => {
         infowindow.open({
           anchor: marker,
-          map: this.map,
+          map: map,
           shouldFocus: false,
         });
       });
@@ -108,17 +122,26 @@ export default {
       });
 
       // saving the marker
-      this.markersOffline.push(marker);
+      markersOffline.push(marker);
 
       // Saving the info window
       this.infoWindows.push(infowindow);
     }
 
     // Clustering the markers
-    this.markerCluster = new MarkerClusterer({
-      map: this.map,
-      markers: [...this.markersOnline, ...this.markersOffline],
+    markerCluster = new MarkerClusterer({
+      map: map,
+      markers: [...markersOnline, ...markersOffline],
     });
+
+    console.log("markerCluster: ",markerCluster);
+    console.log("markersOnline: ",markersOnline);
+    console.log("markersOffline: ",markersOffline);
+
+    this.$store.commit("markers/SET_MARKERS_ONLINE", markersOnline);
+    this.$store.commit("markers/SET_MARKERS_OFFLINE", markersOffline);
+    this.$store.commit("markers/SET_MARKER_CLUSTER", markerCluster);
+    this.$store.commit("markers/SET_MAP", map);
   },
 };
 </script>
