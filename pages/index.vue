@@ -34,7 +34,7 @@
         <v-card
           fluid
           :elevation="hover ? 8 : 4"
-          class="grey darken-4 ma-5 px-2 py-1 rounded-lg"
+          class="grey darken-4 ma-5 px-4 py-1 rounded-lg"
         >
           <v-checkbox
             class="ma-0"
