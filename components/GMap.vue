@@ -134,9 +134,9 @@ export default {
       markers: [...markersOnline, ...markersOffline],
     });
 
-    console.log("markerCluster: ",markerCluster);
-    console.log("markersOnline: ",markersOnline);
-    console.log("markersOffline: ",markersOffline);
+    // console.log("markerCluster: ",markerCluster);
+    // console.log("markersOnline: ",markersOnline);
+    // console.log("markersOffline: ",markersOffline);
 
     this.$store.commit("markers/SET_MARKERS_ONLINE", markersOnline);
     this.$store.commit("markers/SET_MARKERS_OFFLINE", markersOffline);
