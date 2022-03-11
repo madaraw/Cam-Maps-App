@@ -31,7 +31,7 @@
       v-if="onlineCams.length && offlineCams.length"
     >
       <v-hover v-slot="{ hover }" class="checkBoxes">
-        <v-card
+        <div
           fluid
           :elevation="hover ? 8 : 4"
           class="grey darken-4 ma-5 px-4 py-1 rounded-lg"
@@ -59,7 +59,7 @@
             v-model="markerClusterActive"
             label="Clusters"
           ></v-switch>
-        </v-card>
+        </div>
       </v-hover>
       <GMap :onlineCameras="onlineCams" :offlineCameras="offlineCams" />
     </v-container>
