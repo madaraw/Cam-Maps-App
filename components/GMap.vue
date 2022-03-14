@@ -1,7 +1,10 @@
 <template>
   <div class="map pa-0 ma-0" ref="map"></div>
 </template>
-
+ <script type = "text/javascript" 
+          src =
+ "https://d3js.org/d3.v4.min.js">
+</script>
 <script>
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
@@ -128,13 +131,67 @@ export default {
       this.infoWindows.push(infowindow);
     }
 
-
+    //   const renderer = {
+    //     palette: interpolateRgb("red", "blue"),
+    //     render: function ({ count, position }, stats) {
+    //       // use d3-interpolateRgb to interpolate between red and blue
+    //       const color = this.palette(count / stats.clusters.markers.max);
+    //       // create svg url with fill color
+    //       const svg = window.btoa(`
+    // <svg fill="${color}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+    //   <circle cx="120" cy="120" opacity=".8" r="70" />
+    // </svg>`);
+    //       // create marker using svg icon
+    //       return new google.maps.Marker({
+    //         position,
+    //         icon: {
+    //           url: `data:image/svg+xml;base64,${svg}`,
+    //           scaledSize: new google.maps.Size(75, 75),
+    //         },
+    //         label: {
+    //           text: String(count),
+    //           color: "rgba(255,255,255,0.9)",
+    //           fontSize: "12px",
+    //         },
+    //         // adjust zIndex to be above other markers
+    //         zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count,
+    //       });
+    //     },
+    //   };
     // Clustering the markers
     markerCluster = new MarkerClusterer({
       map: map,
       markers: [...markersOnline, ...markersOffline],
+      renderer: {
+        palette: d3.interpolateRgb("blue", "red"),
+        render: function ({ count, position }, stats) {
+          // use d3-interpolateRgb to interpolate between red and blue
+          const color = this.palette(count / stats.clusters.markers.max);
+          // create svg url with fill color
+          const svg = window.btoa(`
+  <svg fill="${color}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+    <circle cx="120" cy="120" opacity=".8" r="60" />    
+  </svg>`);
+          // create marker using svg icon
+          return new google.maps.Marker({
+            position,
+            icon: {
+              url: `data:image/svg+xml;base64,${svg}`,
+              scaledSize: new google.maps.Size(75, 75),
+            },
+            label: {
+              text: String(count),
+              color: "rgba(255,255,255,0.9)",
+              fontSize: "12px",
+            },
+            // adjust zIndex to be above other markers
+            zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count,
+          });
+        },
+      },
     });
 
+    console.log(markerCluster);
 
     this.$store.commit("markers/SET_MARKERS_ONLINE", markersOnline);
     this.$store.commit("markers/SET_MARKERS_OFFLINE", markersOffline);

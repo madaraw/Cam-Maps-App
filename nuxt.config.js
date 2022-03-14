@@ -10,7 +10,7 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - CamMap',
+    titleTemplate: 'Ever-Public-Cam',
     title: 'CamMap',
     htmlAttrs: {
       lang: 'en'
@@ -23,6 +23,11 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+    ],
+    script: [
+      {
+        src: 'https://d3js.org/d3.v4.min.js'
+      }
     ]
   },
 
