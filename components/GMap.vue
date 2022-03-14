@@ -31,7 +31,7 @@ export default {
     let markersOffline = [];
     let markerCluster = null;
     let map = null;
-    let center = { lat: 51.53375206516868, lng: 0.0824166094009549 };
+    let center = { lat: 53.3498, lng: -6.2603 };
 
     // Embedding the map
     map = new this.$google.maps.Map(this.$refs.map, {
@@ -128,15 +128,13 @@ export default {
       this.infoWindows.push(infowindow);
     }
 
+
     // Clustering the markers
     markerCluster = new MarkerClusterer({
       map: map,
       markers: [...markersOnline, ...markersOffline],
     });
 
-    // console.log("markerCluster: ",markerCluster);
-    // console.log("markersOnline: ",markersOnline);
-    // console.log("markersOffline: ",markersOffline);
 
     this.$store.commit("markers/SET_MARKERS_ONLINE", markersOnline);
     this.$store.commit("markers/SET_MARKERS_OFFLINE", markersOffline);
