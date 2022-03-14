@@ -30,37 +30,34 @@
       class="map pa-0 ma-0"
       v-if="onlineCams.length && offlineCams.length"
     >
-      <v-hover v-slot="{ hover }" class="checkBoxes">
-        <div
-          fluid
-          :elevation="hover ? 8 : 4"
-          class="grey darken-4 ma-5 px-4 py-1 rounded-lg"
-        >
-          <v-checkbox
-            class="ma-0"
-            v-model="onlineCamsVisible"
-            label="Online cameras"
-            color="success"
-            hide-details
-            @click="handleClickOnlineCamerasVisibility"
-            :disabled="!offlineCamsVisible"
-          ></v-checkbox>
-          <v-checkbox
-            class="ma-0"
-            v-model="offlineCamsVisible"
-            label="Offline cameras"
-            color="grey"
-            hide-details
-            @click="handleClickOfflineCamerasVisibility"
-            :disabled="!onlineCamsVisible"
-          ></v-checkbox>
-          <v-switch
-            @click="handleClickMarkerClusterActive"
-            v-model="markerClusterActive"
-            label="Clusters"
-          ></v-switch>
+      <div class="checkBoxes grey darken-4 ma-5 px-5 py-3 rounded-lg">
+        <v-checkbox
+          class="ma-0"
+          v-model="onlineCamsVisible"
+          label="Online cameras"
+          color="success"
+          hide-details
+          @click="handleClickOnlineCamerasVisibility"
+          :disabled="!offlineCamsVisible"
+        ></v-checkbox>
+        <v-checkbox
+          class="ma-0"
+          v-model="offlineCamsVisible"
+          label="Offline cameras"
+          color="grey"
+          hide-details
+          @click="handleClickOfflineCamerasVisibility"
+          :disabled="!onlineCamsVisible"
+        ></v-checkbox>
+        <v-switch
+          @click="handleClickMarkerClusterActive"
+          v-model="markerClusterActive"
+          label="Clusters"
+        ></v-switch>
+        <div class="d-flex justify-center">
+          <v-btn @click="handleRecenter"><v-icon>mdi-crosshairs-gps </v-icon></v-btn>
         </div>
-      </v-hover>
+      </div>
       <GMap :onlineCameras="onlineCams" :offlineCameras="offlineCams" />
     </v-container>
   </v-main>
@@ -89,6 +86,9 @@ export default {
     handleClickMarkerClusterActive() {
       this.$store.commit("markers/TOGGLE_MARKER_CLUSTER_ACTIVE");
     },
+    handleRecenter() {
+      this.$store.commit("markers/HANDLE_RECENTER")
+    }
   },
   computed: {
     onlineCams() {
@@ -119,5 +119,11 @@ export default {
 .checkBoxes {
   position: absolute;
   z-index: 1;
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+    0 1px 10px 0 rgba(0, 0, 0, 0.12);
+}
+.checkBoxes:hover {
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 </style>
