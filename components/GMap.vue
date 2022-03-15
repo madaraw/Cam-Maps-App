@@ -68,6 +68,7 @@ export default {
         title: this.onlineCameras[i].name,
         icon: svgMarkerIcon,
       });
+      marker.camera = this.onlineCameras[i];
       // Adding the event listeners for the hover on the markers
       marker.addListener("mouseover", () => {
         infowindow.open({
@@ -111,7 +112,7 @@ export default {
         title: this.offlineCameras[i].name,
         icon: svgMarkerIcon,
       });
-
+      marker.camera = this.offlineCameras[i];
       // Adding the event listeners for the hover on the markers
       marker.addListener("mouseover", () => {
         infowindow.open({
@@ -131,67 +132,71 @@ export default {
       this.infoWindows.push(infowindow);
     }
 
-    //   const renderer = {
-    //     palette: interpolateRgb("red", "blue"),
-    //     render: function ({ count, position }, stats) {
-    //       // use d3-interpolateRgb to interpolate between red and blue
-    //       const color = this.palette(count / stats.clusters.markers.max);
-    //       // create svg url with fill color
-    //       const svg = window.btoa(`
-    // <svg fill="${color}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
-    //   <circle cx="120" cy="120" opacity=".8" r="70" />
-    // </svg>`);
-    //       // create marker using svg icon
-    //       return new google.maps.Marker({
-    //         position,
-    //         icon: {
-    //           url: `data:image/svg+xml;base64,${svg}`,
-    //           scaledSize: new google.maps.Size(75, 75),
-    //         },
-    //         label: {
-    //           text: String(count),
-    //           color: "rgba(255,255,255,0.9)",
-    //           fontSize: "12px",
-    //         },
-    //         // adjust zIndex to be above other markers
-    //         zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count,
-    //       });
-    //     },
-    //   };
-    // Clustering the markers
+    // Creating the marker clusters
     markerCluster = new MarkerClusterer({
       map: map,
       markers: [...markersOnline, ...markersOffline],
       renderer: {
+        // Changing the rendering algorithm
         palette: d3.interpolateRgb("blue", "red"),
-        render: function ({ count, position }, stats) {
-          // use d3-interpolateRgb to interpolate between red and blue
-          const color = this.palette(count / stats.clusters.markers.max);
-          // create svg url with fill color
+        render: function (cluster, stats) {
+          console.log(cluster)
+          // Using d3-interpolateRgb to interpolate between shades of blue and red
+          const color = this.palette(
+            cluster.count / stats.clusters.markers.max
+          );
+          // Creating the svg url with fill color
           const svg = window.btoa(`
-  <svg fill="${color}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
-    <circle cx="120" cy="120" opacity=".8" r="60" />    
-  </svg>`);
-          // create marker using svg icon
-          return new google.maps.Marker({
-            position,
+          <svg fill="${color}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+            <circle cx="120" cy="120" opacity=".8" r="100" />    
+          </svg>`);
+          // Creating the marker using svg icon
+          const singlecluster = new google.maps.Marker({
+            position: cluster.position,
             icon: {
               url: `data:image/svg+xml;base64,${svg}`,
-              scaledSize: new google.maps.Size(75, 75),
+              scaledSize: new google.maps.Size(50, 50),
             },
             label: {
-              text: String(count),
+              text: String(cluster.count),
               color: "rgba(255,255,255,0.9)",
               fontSize: "12px",
             },
-            // adjust zIndex to be above other markers
-            zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count,
+            // Adjusting the zIndex to be above other markers the more markers it contains
+            zIndex: Number(google.maps.Marker.MAX_ZINDEX) + cluster.count,
           });
+
+          // Creating the content for the info window
+          let content = "<div class='black--text'><ul>";
+          for (let i = 0; i < cluster.markers.length; i++) {
+            content += "<li><h3>" + cluster.markers[i].camera.name + "</h3></li>";
+          }
+          content += "</ul></div>";
+
+          // Creating the infowindow
+          const infowindow = new google.maps.InfoWindow({
+            content: content,
+          });
+
+          // Adding the infowindow to the cluster on hover
+          singlecluster.addListener("mouseover", () => {
+            infowindow.open({
+              anchor: singlecluster,
+              map: map,
+              shouldFocus: false,
+            });
+          });
+
+          // Closing the window when the mouse is out
+          singlecluster.addListener("mouseout", () => {
+            infowindow.close();
+          });
+
+          // Pushing the cluster to the map
+          return singlecluster;
         },
       },
     });
-
-    console.log(markerCluster);
 
     this.$store.commit("markers/SET_MARKERS_ONLINE", markersOnline);
     this.$store.commit("markers/SET_MARKERS_OFFLINE", markersOffline);
