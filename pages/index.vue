@@ -4,7 +4,7 @@
       <div class="py-1" v-for="camera in cameras" :key="camera.id">
         <div v-if="camera.status == 'online'">
           <NuxtLink
-            :to="camera.id + '&' + camera.frequency"
+            :to="camera.id"
             class="text-decoration-none"
           >
             <div>
@@ -14,8 +14,15 @@
           </NuxtLink>
         </div>
         <div class="offline" v-else>
-          <v-img width="100%" :src="camera.thumbnail_url" />
-          <h4 class="text-center white--text">{{ camera.name }}</h4>
+          <NuxtLink
+            :to="camera.id"
+            class="text-decoration-none"
+          >
+            <div>
+              <v-img width="100%" :src="camera.thumbnail_url" />
+              <h4 class="text-center white--text">{{ camera.name }}</h4>
+            </div>
+          </NuxtLink>
         </div>
       </div>
     </v-navigation-drawer>
@@ -55,7 +62,9 @@
           label="Clusters"
         ></v-switch>
         <div class="d-flex justify-center">
-          <v-btn @click="handleRecenter"><v-icon>mdi-crosshairs-gps </v-icon></v-btn>
+          <v-btn @click="handleRecenter"
+            ><v-icon>mdi-crosshairs-gps </v-icon></v-btn
+          >
         </div>
       </div>
       <GMap :onlineCameras="onlineCams" :offlineCameras="offlineCams" />
@@ -87,8 +96,8 @@ export default {
       this.$store.commit("markers/TOGGLE_MARKER_CLUSTER_ACTIVE");
     },
     handleRecenter() {
-      this.$store.commit("markers/HANDLE_RECENTER")
-    }
+      this.$store.commit("markers/HANDLE_RECENTER");
+    },
   },
   computed: {
     onlineCams() {
@@ -114,7 +123,6 @@ export default {
 }
 .offline {
   opacity: 0.2;
-  cursor: not-allowed;
 }
 .checkBoxes {
   position: absolute;

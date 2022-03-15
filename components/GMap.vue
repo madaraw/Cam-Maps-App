@@ -42,8 +42,8 @@ export default {
       center: center,
       disableDefaultUI: true,
     });
-
-    // Creating the SVG marker icon (offline cameras)
+    
+    // Creating the SVG marker icon (online cameras)
     const svgMarkerIcon = {
       path: "M320 144C320 223.5 255.5 288 176 288C96.47 288 32 223.5 32 144C32 64.47 96.47 0 176 0C255.5 0 320 64.47 320 144zM192 64C192 55.16 184.8 48 176 48C122.1 48 80 90.98 80 144C80 152.8 87.16 160 96 160C104.8 160 112 152.8 112 144C112 108.7 140.7 80 176 80C184.8 80 192 72.84 192 64zM144 480V317.1C154.4 319 165.1 319.1 176 319.1C186.9 319.1 197.6 319 208 317.1V480C208 497.7 193.7 512 176 512C158.3 512 144 497.7 144 480z",
       fillColor: "green",
@@ -84,9 +84,15 @@ export default {
       // Adding the event listener for the click
       marker.addListener("click", () => {
         this.$router.push(
-          "/" + this.onlineCameras[i].id + "&" + this.onlineCameras[i].frequency
+          "/" +
+            this.onlineCameras[i].id +
+            "&" +
+            this.onlineCameras[i].frequency +
+            "&" +
+            this.onlineCameras[i].status
         );
       });
+      
 
       // Saving the marker
       markersOnline.push(marker);
@@ -125,6 +131,18 @@ export default {
         infowindow.close();
       });
 
+      // Adding the event listener for the click
+      marker.addListener("click", () => {
+        this.$router.push(
+          "/" +
+            this.offlineCameras[i].id +
+            "&" +
+            this.offlineCameras[i].frequency +
+            "&" +
+            this.offlineCameras[i].status
+        );
+      });
+
       // saving the marker
       markersOffline.push(marker);
 
@@ -140,7 +158,6 @@ export default {
         // Changing the rendering algorithm
         palette: d3.interpolateRgb("blue", "red"),
         render: function (cluster, stats) {
-          console.log(cluster)
           // Using d3-interpolateRgb to interpolate between shades of blue and red
           const color = this.palette(
             cluster.count / stats.clusters.markers.max
@@ -169,7 +186,8 @@ export default {
           // Creating the content for the info window
           let content = "<div class='black--text'><ul>";
           for (let i = 0; i < cluster.markers.length; i++) {
-            content += "<li><h3>" + cluster.markers[i].camera.name + "</h3></li>";
+            content +=
+              "<li><h3>" + cluster.markers[i].camera.name + "</h3></li>";
           }
           content += "</ul></div>";
 
