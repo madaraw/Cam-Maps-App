@@ -23,10 +23,25 @@
     <div class="screen-container pa-0 d-flex justify-center" ref="streamImg">
       <img :src="streamImg" class="stream ma-0" />
       <div class="options">
-        <v-btn @click="handleFullscreen">
-          <v-icon v-if="isFullScreen">mdi-fullscreen-exit</v-icon>
-          <v-icon v-else>mdi-fullscreen</v-icon>
-        </v-btn>
+        <v-list class="pa-0" outlined dense>
+          <v-list-item @click="downloadSnapshot" class="d-flex justify-center align-center">
+                <v-icon>mdi-download</v-icon>
+          </v-list-item>
+          <v-list-item
+            class="d-flex justify-center align-center"
+            @click="handlePausePlay"
+          >
+            <v-icon v-if="isPause">mdi-play</v-icon>
+            <v-icon v-else>mdi-pause</v-icon>
+          </v-list-item>
+          <v-list-item
+            class="d-flex justify-center align-center"
+            @click="handleFullscreen"
+          >
+            <v-icon v-if="isFullScreen">mdi-fullscreen-exit</v-icon>
+            <v-icon v-else>mdi-fullscreen</v-icon>
+          </v-list-item>
+        </v-list>
       </div>
     </div>
   </v-main>
@@ -44,6 +59,7 @@ export default {
       cameraStatus: this.$route.params.pathMatch.split("&")[2],
       isFullScreen: false,
       refreshStreamImage: null,
+      isPause: false,
     };
   },
   methods: {
@@ -55,17 +71,44 @@ export default {
       else document.exitFullscreen();
       this.isFullScreen = !this.isFullScreen;
     },
+    handlePausePlay() {
+      if (this.isPause) this.startStream();
+      else this.stopStream();
+      this.isPause = !this.isPause;
+    },
+    startStream() {
+      this.refreshStreamImage = setInterval(() => {
+        let randomTime = new Date().getTime();
+        this.streamImg = `https://media.evercam.io/v1/cameras/${this.cameraId}/thumbnail?thumbnailId=${randomTime}`;
+      }, (60 / this.cameraFrequency) * 1000);
+    },
+    stopStream() {
+      clearInterval(this.refreshStreamImage);
+    },
+    forceFileDownload(url, title) {
+      console.log(title);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", title);
+      document.body.appendChild(link);
+      link.click();
+    },
+    async downloadSnapshot() {
+      const res = await fetch(this.streamImg).then((res) => {
+        return res.blob();
+      });
+      const date = new Date()
+      this.forceFileDownload(window.URL.createObjectURL(res), "snapshot " + this.cameraId + " " + date.getHours() + ":" + date.getMinutes());
+    },
   },
-  mounted() {
+  async mounted() {
+    console.log(this.$refs.streamImg);
     if (this.cameraStatus != "online") return;
-    this.refreshStreamImage = setInterval(() => {
-      let randomTime = new Date().getTime();
-      this.streamImg = `https://media.evercam.io/v1/cameras/${this.cameraId}/thumbnail?thumbnailId=${randomTime}`;
-    }, (60 / this.cameraFrequency) * 1000);
+    this.startStream();
   },
   beforeDestroy() {
     if (this.cameraStatus != "online") return;
-    clearInterval(this.refreshStreamImage);
+    this.stopStream();
   },
 };
 </script>
