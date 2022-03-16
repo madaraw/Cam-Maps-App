@@ -4,7 +4,7 @@
       <div class="py-1" v-for="camera in cameras" :key="camera.id">
         <div v-if="camera.status == 'online'">
           <NuxtLink
-            :to="camera.id"
+            :to="camera.id + '&' + camera.frequency + '&' + camera.status "
             class="text-decoration-none"
           >
             <div>
@@ -15,7 +15,7 @@
         </div>
         <div class="offline" v-else>
           <NuxtLink
-            :to="camera.id"
+            :to="camera.id + '&' + camera.frequency + '&' + camera.status "
             class="text-decoration-none"
           >
             <div>
@@ -122,7 +122,7 @@ export default {
   width: 100vw;
 }
 .offline {
-  opacity: 0.2;
+  opacity: 0.7;
 }
 .checkBoxes {
   position: absolute;
