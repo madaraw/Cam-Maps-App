@@ -24,8 +24,11 @@
       <img :src="streamImg" class="stream ma-0" />
       <div class="options">
         <v-list class="pa-0" outlined dense>
-          <v-list-item @click="downloadSnapshot" class="d-flex justify-center align-center">
-                <v-icon>mdi-download</v-icon>
+          <v-list-item
+            @click="downloadSnapshot"
+            class="d-flex justify-center align-center"
+          >
+            <v-icon>mdi-download</v-icon>
           </v-list-item>
           <v-list-item
             class="d-flex justify-center align-center"
@@ -77,10 +80,12 @@ export default {
       this.isPause = !this.isPause;
     },
     startStream() {
+      let refreshRate = 5000
+      if(this.cameraFrequency) refreshRate = (60 / this.cameraFrequency) * 1000
       this.refreshStreamImage = setInterval(() => {
         let randomTime = new Date().getTime();
         this.streamImg = `https://media.evercam.io/v1/cameras/${this.cameraId}/thumbnail?thumbnailId=${randomTime}`;
-      }, (60 / this.cameraFrequency) * 1000);
+      }, refreshRate);
     },
     stopStream() {
       clearInterval(this.refreshStreamImage);
