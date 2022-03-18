@@ -14,9 +14,6 @@
             class="grey--text lighten-5 pa-1 ma-1 split"
           />
         </div>
-        <div class="d-flex justify-space-around align-center">
-          <v-btn @click="handleSubmitSearch" small class="ma-0">search</v-btn>
-        </div>
       </form>
       <div v-if="serverSearchQuery" class="mt-2">
         <p class="text-caption">
@@ -176,13 +173,15 @@ export default {
     handleRecenter() {
       this.$store.commit("markers/HANDLE_RECENTER");
     },
-    handleSubmitSearch() {
-      this.$store.commit("cameras/SEARCH", this.searchQuery);
-    },
     handleResetSearch() {
       this.searchQuery = "";
       this.$store.commit("cameras/SEARCH", "");
     },
+  },
+  watch:{
+    searchQuery(newSearchQuery){
+      this.$store.commit("cameras/SEARCH", newSearchQuery);
+    }
   },
   computed: {
     sideOnlineCams() {
