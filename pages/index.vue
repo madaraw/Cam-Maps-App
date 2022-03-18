@@ -1,26 +1,64 @@
 <template>
   <v-main>
     <v-navigation-drawer v-model="drawer" app>
-      <div class="py-1" v-for="camera in cameras" :key="camera.id">
-        <div v-if="camera.status == 'online'">
+      <v-form>
+        <v-text-field label="Main input"></v-text-field>
+        <v-btn> Validate </v-btn>
+      </v-form>
+      <div v-if="onlineCams.length" class="pa-1 pb-3 split">
+        <h3
+          class="
+            white--text
+            text-decoration-underline
+            font-weight-medium
+            mt-2
+            mb-3
+          "
+        >
+          Online cameras:
+        </h3>
+        <div class="on-hover" v-for="camera in onlineCams" :key="camera.id">
           <NuxtLink
-            :to="camera.id + '&' + camera.frequency + '&' + camera.status "
+            :to="camera.id + '&' + camera.frequency + '&' + camera.status"
             class="text-decoration-none"
           >
-            <div>
+            <div class="white--text">
               <v-img width="100%" :src="camera.thumbnail_url" />
-              <h4 class="text-center white--text">{{ camera.name }}</h4>
+              <div class="d-flex justify-center align-center">
+                <v-icon color="green">mdi-circle-medium</v-icon>
+                <h4 class="text-center font-weight-medium text--secondary">
+                  {{ camera.name }}
+                </h4>
+              </div>
             </div>
           </NuxtLink>
         </div>
-        <div class="offline" v-else>
+      </div>
+      <div class="pa-1 mt-4" v-if="offlineCams.length">
+        <h3
+          class="
+            white--text
+            text-decoration-underline
+            font-weight-medium
+            mt-2
+            mb-3
+          "
+        >
+          Offline cameras:
+        </h3>
+        <div class="on-hover" v-for="camera in offlineCams" :key="camera.id">
           <NuxtLink
-            :to="camera.id + '&' + camera.frequency + '&' + camera.status "
+            :to="camera.id + '&' + camera.frequency + '&' + camera.status"
             class="text-decoration-none"
           >
-            <div>
+            <div class="white--text">
               <v-img width="100%" :src="camera.thumbnail_url" />
-              <h4 class="text-center white--text">{{ camera.name }}</h4>
+              <div class="d-flex justify-center align-center">
+                <v-icon color="grey">mdi-circle-medium</v-icon>
+                <h4 class="text-center font-weight-medium text--secondary">
+                  {{ camera.name }}
+                </h4>
+              </div>
             </div>
           </NuxtLink>
         </div>
@@ -106,9 +144,6 @@ export default {
     offlineCams() {
       return this.$store.getters["cameras/GET_OFFLINE_CAMS"];
     },
-    cameras() {
-      return [...this.onlineCams, ...this.offlineCams];
-    },
   },
   beforeCreate() {
     this.$store.dispatch("cameras/FETCH_CAMERAS");
@@ -133,5 +168,18 @@ export default {
 .checkBoxes:hover {
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
     0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+.split {
+  border-style: solid;
+  border-width: 0 0 1px 0;
+}
+.on-hover {
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 5px;
+  margin-bottom: 4px;
+}
+.on-hover:hover {
+  margin: 8px 4px;
 }
 </style>

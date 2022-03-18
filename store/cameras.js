@@ -22,6 +22,9 @@ const frequencies = [
 ]
 
 export const state = () => ({
+    showingOnlineCams: [],
+    showingOfflineCams: [],
+    searchQuery: '',
     onlineCams: [],
     offlineCams: [],
 })
@@ -32,16 +35,46 @@ export const mutations = {
     },
     SET_OFFLINE_CAMS(state, offlineCams) {
         state.offlineCams = offlineCams
+    },
+    SET_SHOWING_ONLINE_CAMS(state, showingOnlineCams) {
+        state.showingOnlineCams = showingOnlineCams
+    },
+    SET_SHOWING_OFFLINE_CAMS(state, showingOfflineCams) {
+        state.showingOfflineCams = showingOfflineCams
+    },
+    SEARCH(state, searchQuery) {
+        state.searchQuery = searchQuery
+        state.showingOfflineCams = []
+        state.showingOnlineCams = []
+        if (searchQuery == '')
+            return
+        state.onlineCams.forEach(camera => {
+            if (camera.name.includes(searchQuery))
+                state.showingOnlineCams.push(camera)
+        });
+        state.offlineCams.forEach(camera => {
+            if (camera.name.includes(searchQuery))
+                state.showingOfflineCams.push(camera)
+        });
     }
 }
 
 export const getters = {
-    GET_ONLINE_CAMS(state){
+    GET_ONLINE_CAMS(state) {
         return state.onlineCams
     },
-    GET_OFFLINE_CAMS(state){
+    GET_OFFLINE_CAMS(state) {
         return state.offlineCams
-    }
+    },
+    GET_SEARCH_QUERY(state) {
+        return state.searchQuery
+    },
+    GET_SHOWING_ONLINE_CAMS(state) {
+        return state.showingOnlineCams
+    },
+    GET_SHOWING_OFFLINE_CAMS(state) {
+        return state.showingOfflineCams
+    },
 }
 
 export const actions = {
@@ -65,5 +98,7 @@ export const actions = {
         }
         commit("SET_ONLINE_CAMS", onlineCams)
         commit("SET_OFFLINE_CAMS", offlineCams)
+        commit("GET_SHOWING_ONLINE_CAMS", onlineCams)
+        commit("GET_SHOWING_OFFLINE_CAMS", offlineCams)
     }
 }
