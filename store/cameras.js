@@ -46,14 +46,17 @@ export const mutations = {
         state.searchQuery = searchQuery
         state.showingOfflineCams = []
         state.showingOnlineCams = []
-        if (searchQuery == '')
+        if (searchQuery == ''){
+            state.showingOfflineCams = state.offlineCams
+            state.showingOnlineCams = state.onlineCams            
             return
+        }
         state.onlineCams.forEach(camera => {
-            if (camera.name.includes(searchQuery))
+            if (camera.name.toLowerCase().includes(searchQuery.toLowerCase()))
                 state.showingOnlineCams.push(camera)
         });
         state.offlineCams.forEach(camera => {
-            if (camera.name.includes(searchQuery))
+            if (camera.name.toLowerCase().includes(searchQuery.toLowerCase()))
                 state.showingOfflineCams.push(camera)
         });
     }
@@ -98,7 +101,7 @@ export const actions = {
         }
         commit("SET_ONLINE_CAMS", onlineCams)
         commit("SET_OFFLINE_CAMS", offlineCams)
-        commit("GET_SHOWING_ONLINE_CAMS", onlineCams)
-        commit("GET_SHOWING_OFFLINE_CAMS", offlineCams)
+        commit("SET_SHOWING_ONLINE_CAMS", onlineCams)
+        commit("SET_SHOWING_OFFLINE_CAMS", offlineCams)
     }
 }

@@ -1,40 +1,68 @@
 <template>
   <v-main>
     <v-navigation-drawer v-model="drawer" app>
-      <v-form>
-        <v-text-field label="Main input"></v-text-field>
-        <v-btn> Validate </v-btn>
-      </v-form>
-      <div v-if="onlineCams.length" class="pa-1 pb-3 split">
+      <form
+        @submit.prevent="handleSubmitSearch"
+        class="d-flex flex-column justify-center"
+      >
+        <input
+          v-model="searchQuery"
+          placeholder="Search.."
+          type="text"
+          class="white--text pa-1 ma-1 split"
+        />
+        <div class="d-flex justify-space-around align-center">
+          <v-btn @click="handleSubmitSearch" small class="ma-0">search</v-btn>
+          <v-btn @click="handleResetSearch" small color="error" class="ma-0"
+            >reset</v-btn
+          >
+        </div>
+      </form>
+      <div v-if="serverSearchQuery" class="mt-2">
+        <p class="text-caption">
+          {{ sideOfflineCams.length + sideOnlineCams.length }} results for "{{
+            serverSearchQuery
+          }}".
+        </p>
+      </div>
+      <div class="pa-1 pb-3 split">
         <h3
           class="
             white--text
             text-decoration-underline
             font-weight-medium
-            mt-2
             mb-3
           "
         >
           Online cameras:
         </h3>
-        <div class="on-hover" v-for="camera in onlineCams" :key="camera.id">
-          <NuxtLink
-            :to="camera.id + '&' + camera.frequency + '&' + camera.status"
-            class="text-decoration-none"
+        <div v-if="sideOnlineCams.length">
+          <div
+            class="on-hover"
+            v-for="camera in sideOnlineCams"
+            :key="camera.id"
           >
-            <div class="white--text">
-              <v-img width="100%" :src="camera.thumbnail_url" />
-              <div class="d-flex justify-center align-center">
-                <v-icon color="green">mdi-circle-medium</v-icon>
-                <h4 class="text-center font-weight-medium text--secondary">
-                  {{ camera.name }}
-                </h4>
+            <NuxtLink
+              :to="camera.id + '&' + camera.frequency + '&' + camera.status"
+              class="text-decoration-none"
+            >
+              <div class="white--text">
+                <v-img width="100%" :src="camera.thumbnail_url" />
+                <div class="d-flex justify-center align-center">
+                  <v-icon color="green">mdi-circle-medium</v-icon>
+                  <h4 class="text-center font-weight-medium text--secondary">
+                    {{ camera.name }}
+                  </h4>
+                </div>
               </div>
-            </div>
-          </NuxtLink>
+            </NuxtLink>
+          </div>
+        </div>
+        <div v-else>
+          <h5>No data</h5>
         </div>
       </div>
-      <div class="pa-1 mt-4" v-if="offlineCams.length">
+      <div class="pa-1 mt-4">
         <h3
           class="
             white--text
@@ -46,21 +74,30 @@
         >
           Offline cameras:
         </h3>
-        <div class="on-hover" v-for="camera in offlineCams" :key="camera.id">
-          <NuxtLink
-            :to="camera.id + '&' + camera.frequency + '&' + camera.status"
-            class="text-decoration-none"
+        <div v-if="sideOfflineCams.length">
+          <div
+            class="on-hover"
+            v-for="camera in sideOfflineCams"
+            :key="camera.id"
           >
-            <div class="white--text">
-              <v-img width="100%" :src="camera.thumbnail_url" />
-              <div class="d-flex justify-center align-center">
-                <v-icon color="grey">mdi-circle-medium</v-icon>
-                <h4 class="text-center font-weight-medium text--secondary">
-                  {{ camera.name }}
-                </h4>
+            <NuxtLink
+              :to="camera.id + '&' + camera.frequency + '&' + camera.status"
+              class="text-decoration-none"
+            >
+              <div class="white--text">
+                <v-img width="100%" :src="camera.thumbnail_url" />
+                <div class="d-flex justify-center align-center">
+                  <v-icon color="grey">mdi-circle-medium</v-icon>
+                  <h4 class="text-center font-weight-medium text--secondary">
+                    {{ camera.name }}
+                  </h4>
+                </div>
               </div>
-            </div>
-          </NuxtLink>
+            </NuxtLink>
+          </div>
+        </div>
+        <div v-else>
+          <h5>No data</h5>
         </div>
       </div>
     </v-navigation-drawer>
@@ -121,6 +158,7 @@ export default {
         this.$store.getters["markers/GET_MARKERS_OFFLINE_VISIBILITY"],
       markerClusterActive:
         this.$store.getters["markers/GET_MARKER_CLUSTER_ACTIVE"],
+      searchQuery: "",
     };
   },
   methods: {
@@ -136,13 +174,29 @@ export default {
     handleRecenter() {
       this.$store.commit("markers/HANDLE_RECENTER");
     },
+    handleSubmitSearch() {
+      this.$store.commit("cameras/SEARCH", this.searchQuery);
+    },
+    handleResetSearch() {
+      this.searchQuery = "";
+      this.$store.commit("cameras/SEARCH", "");
+    },
   },
   computed: {
+    sideOnlineCams() {
+      return this.$store.getters["cameras/GET_SHOWING_ONLINE_CAMS"];
+    },
+    sideOfflineCams() {
+      return this.$store.getters["cameras/GET_SHOWING_OFFLINE_CAMS"];
+    },
     onlineCams() {
       return this.$store.getters["cameras/GET_ONLINE_CAMS"];
     },
     offlineCams() {
       return this.$store.getters["cameras/GET_OFFLINE_CAMS"];
+    },
+    serverSearchQuery() {
+      return this.$store.getters["cameras/GET_SEARCH_QUERY"];
     },
   },
   beforeCreate() {
@@ -181,5 +235,8 @@ export default {
 }
 .on-hover:hover {
   margin: 8px 4px;
+}
+input:focus {
+  outline: none;
 }
 </style>
