@@ -5,17 +5,17 @@
         @submit.prevent="handleSubmitSearch"
         class="d-flex flex-column justify-center"
       >
-        <input
-          v-model="searchQuery"
-          placeholder="Search.."
-          type="text"
-          class="white--text pa-1 ma-1 split"
-        />
+        <div>
+          <span class="search-input" @click="handleResetSearch">x</span>
+          <input
+            v-model="searchQuery"
+            placeholder="Search.."
+            type="text"
+            class="grey--text lighten-5 pa-1 ma-1 split"
+          />
+        </div>
         <div class="d-flex justify-space-around align-center">
           <v-btn @click="handleSubmitSearch" small class="ma-0">search</v-btn>
-          <v-btn @click="handleResetSearch" small color="error" class="ma-0"
-            >reset</v-btn
-          >
         </div>
       </form>
       <div v-if="serverSearchQuery" class="mt-2">
@@ -28,7 +28,8 @@
       <div class="pa-1 pb-3 split">
         <h3
           class="
-            white--text
+            grey--text
+            lighten-5
             text-decoration-underline
             font-weight-medium
             mb-3
@@ -46,7 +47,7 @@
               :to="camera.id + '&' + camera.frequency + '&' + camera.status"
               class="text-decoration-none"
             >
-              <div class="white--text">
+              <div class="grey--text lighten-5">
                 <v-img width="100%" :src="camera.thumbnail_url" />
                 <div class="d-flex justify-center align-center">
                   <v-icon color="green">mdi-circle-medium</v-icon>
@@ -65,7 +66,8 @@
       <div class="pa-1 mt-4">
         <h3
           class="
-            white--text
+            grey--text
+            lighten-5
             text-decoration-underline
             font-weight-medium
             mt-2
@@ -84,7 +86,7 @@
               :to="camera.id + '&' + camera.frequency + '&' + camera.status"
               class="text-decoration-none"
             >
-              <div class="white--text">
+              <div class="grey--text lighten-5">
                 <v-img width="100%" :src="camera.thumbnail_url" />
                 <div class="d-flex justify-center align-center">
                   <v-icon color="grey">mdi-circle-medium</v-icon>
@@ -229,8 +231,9 @@ export default {
 }
 .on-hover {
   border-style: solid;
-  border-width: 2px;
+  border-width: 1px;
   border-radius: 5px;
+  border-color: lightgray;
   margin-bottom: 4px;
 }
 .on-hover:hover {
@@ -238,5 +241,13 @@ export default {
 }
 input:focus {
   outline: none;
+}
+.search-input {
+  position: relative;
+  top: 50%;
+  left: 80%;
+}
+.search-input:hover{
+  cursor: pointer;
 }
 </style>

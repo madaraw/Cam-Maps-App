@@ -108,7 +108,7 @@ export default {
     for (let i = 0; i < this.offlineCameras.length; i++) {
       // Creating the info window
       const infowindow = new this.$google.maps.InfoWindow({
-        content: '<div><h3 class="black--text">Disconnected</h3></div>',
+        content: `<div><h3 class="black--text">${this.offlineCameras[i].name}</h3><img style="height: 200px;" src="${this.offlineCameras[i].thumbnail_url}"/></div>`,
       });
 
       // Creating the marker
