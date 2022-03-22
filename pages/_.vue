@@ -115,6 +115,11 @@ export default {
     if (this.cameraStatus != "online") return;
     this.stopStream();
   },
+  head(){
+    return{
+      title: this.$route.params.pathMatch.split("&")[0],
+    }
+  }
 };
 </script>
 

@@ -10,7 +10,7 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: 'Ever-Public-Cam',
+    titleTemplate: 'Ever-Public-Cam - %s',
     title: 'CamMap',
     htmlAttrs: {
       lang: 'en'
