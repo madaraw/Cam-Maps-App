@@ -31,6 +31,7 @@
             <v-icon>mdi-download</v-icon>
           </v-list-item>
           <v-list-item
+            v-if="cameraStatus == 'online'"
             class="d-flex justify-center align-center"
             @click="handlePausePlay"
           >
@@ -60,9 +61,9 @@ export default {
         this.$route.params.pathMatch.split("&")[0]
       }/thumbnail?thumbnailId=1`,
       cameraStatus: this.$route.params.pathMatch.split("&")[2],
-      isFullScreen: false,
       refreshStreamImage: null,
       isPause: false,
+      isFullScreen: false,
     };
   },
   methods: {
@@ -70,9 +71,13 @@ export default {
       this.$router.push("/");
     },
     handleFullscreen() {
-      if (!this.isFullScreen) this.$refs.streamImg.requestFullscreen();
+      var fullscreenElement =
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullscreenElement ||
+        document.msFullscreenElement;
+      if (!fullscreenElement) this.$refs.streamImg.requestFullscreen();
       else document.exitFullscreen();
-      this.isFullScreen = !this.isFullScreen;
     },
     handlePausePlay() {
       if (this.isPause) this.startStream();
@@ -80,8 +85,9 @@ export default {
       this.isPause = !this.isPause;
     },
     startStream() {
-      let refreshRate = 5000
-      if(this.cameraFrequency) refreshRate = (60 / this.cameraFrequency) * 1000
+      let refreshRate = 5000;
+      if (this.cameraFrequency)
+        refreshRate = (60 / this.cameraFrequency) * 1000;
       this.refreshStreamImage = setInterval(() => {
         let randomTime = new Date().getTime();
         this.streamImg = `https://media.evercam.io/v1/cameras/${this.cameraId}/thumbnail?thumbnailId=${randomTime}`;
@@ -102,24 +108,46 @@ export default {
       const res = await fetch(this.streamImg).then((res) => {
         return res.blob();
       });
-      const date = new Date()
-      this.forceFileDownload(window.URL.createObjectURL(res), "snapshot " + this.cameraId + " " + date.getHours() + ":" + date.getMinutes());
+      const date = new Date();
+      this.forceFileDownload(
+        window.URL.createObjectURL(res),
+        "snapshot " +
+          this.cameraId +
+          " " +
+          date.getHours() +
+          ":" +
+          date.getMinutes()
+      );
+    },
+    toggleIsFullScreen() {
+      var fullscreenElement =
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullscreenElement ||
+        document.msFullscreenElement;
+      if (!fullscreenElement) {
+        this.isFullScreen = false;
+      } else {
+        this.isFullScreen = true;
+      }
     },
   },
-  async mounted() {
-    console.log(this.$refs.streamImg);
+
+  mounted() {
     if (this.cameraStatus != "online") return;
     this.startStream();
   },
+
   beforeDestroy() {
     if (this.cameraStatus != "online") return;
     this.stopStream();
   },
-  head(){
-    return{
+
+  head() {
+    return {
       title: this.$route.params.pathMatch.split("&")[0],
-    }
-  }
+    };
+  },
 };
 </script>
 
@@ -128,15 +156,16 @@ export default {
   height: 100vh;
 }
 .screen-container {
-  height: 100%;
+  height: 100vh;
 }
 .stream {
   width: 100%;
+  height: 100%;
 }
 .options {
   position: absolute;
   bottom: 0;
   right: 0;
-  padding: 20px;
+  padding: 0 20px 10px 0;
 }
 </style>

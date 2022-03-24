@@ -81,7 +81,9 @@ export const getters = {
 }
 
 export const actions = {
-    async FETCH_CAMERAS({ commit }) {
+    async FETCH_CAMERAS({ commit, state }) {
+        if(state.onlineCams.length || state.offlineCams.length)
+            return
         const result = await fetch("https://media.evercam.io/v2/public/cameras").then(res => res.json())
         let onlineCams = []
         let offlineCams = []

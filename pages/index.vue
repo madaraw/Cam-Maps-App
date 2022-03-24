@@ -25,11 +25,10 @@
       <div class="pa-1 pb-3 split">
         <h3
           class="
-            grey--text
-            lighten-5
             text-decoration-underline
             font-weight-medium
             mb-3
+            white--text
           "
         >
           Online cameras:
@@ -63,12 +62,11 @@
       <div class="pa-1 mt-4">
         <h3
           class="
-            grey--text
-            lighten-5
             text-decoration-underline
             font-weight-medium
             mt-2
             mb-3
+            white--text
           "
         >
           Offline cameras:
